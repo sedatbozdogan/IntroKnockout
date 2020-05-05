@@ -1,0 +1,114 @@
+﻿
+@{
+    @ViewData["Title"]= "Anasayfa";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+
+</head>
+<body>
+    <div class="container pt-5">
+        <div class="jumbotron">
+            <h2>https://data.ibb.gov.tr/</h2>
+            <h3>Açık veri seti kullanılarak KnockoutJS uygulaması</h3>
+            <form data-bind="submit:save">
+                <div class="row">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" data-bind="value:Name" placeholder="Adres" />
+                        <input type="hidden" class="form-control" data-bind="value:AddressId" placeholder="Adres" />
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" data-bind="value:NeighborhoodName" placeholder="Semt" />
+                    </div>
+                    <div class="col-md-4">
+                        <input type="submit" class="btn btn-primary" value="Kaydet" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" data-bind="click: getList" class="btn btn-success">Adres Listele</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <tbody data-bind="foreach: AddressList">
+                        <tr>
+                            <td data-bind="text: addressId"></td>
+                            <td data-bind="text: name"></td>
+                            <td data-bind="text: neighborhoodName"></td>
+                            <td>
+                                <button data-bind="click: $parent.getDetail" class="btn btn-warning">Detay</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        function addressViewModel() {
+
+            var self = this;
+            self.AddressId = ko.observable();
+            self.Name = ko.observable();
+            self.NeighborhoodName = ko.observable();
+
+            self.AddressList = ko.observableArray([]);
+
+            self.getList = function () {
+                $.ajax({
+                    url: "/api/address",
+                    type: "get",
+                    contentType: 'application/json; charset=UTF-8',
+                    success: function (datas) {
+                        self.AddressList($.map(datas, function (address) {
+                            return new AddressVM(address);
+                        }));
+                    },
+                    error: function (info) {
+                        console.log(info);
+                    }
+                });
+            };
+
+            self.getDetail = function () {
+                self.AddressId(this.addressId());
+                self.Name(this.name());
+                self.NeighborhoodName(this.neighborhoodName());
+            }
+
+            self.save = function () {
+                console.log(this.AddressId());
+                console.log(this.Name());
+                console.log(this.NeighborhoodName());
+            }
+
+        };
+
+        function AddressVM(data) {
+           var self = this;
+           self.addressId = ko.observable(data.addressId);
+           self.name = ko.observable(data.name);
+           self.countryName = ko.observable(data.countryName);
+           self.neighborhoodName = ko.observable(data.neighborhoodName);
+        }
+
+        ko.applyBindings(new addressViewModel());
+    </script>
+</body>
+</html>
