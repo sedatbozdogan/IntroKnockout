@@ -1,17 +1,13 @@
-﻿using System;
+﻿using IntroKnockout.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using IntroKnockout.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
 namespace IntroKnockout.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApiController : ControllerBase
+    public class AddressController : ControllerBase
     {
         [HttpGet]
         public JsonResult Get()
