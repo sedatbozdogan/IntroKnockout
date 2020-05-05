@@ -16,6 +16,7 @@ namespace IntroKnockout.Controllers
         [HttpGet]
         public JsonResult Get()
         {
+
             string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files\\muhtarlk-adres-bilgileri.csv");
             List<AddressInfo> list = new List<AddressInfo>();
             using (var reader = new StreamReader(path))
